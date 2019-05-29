@@ -1,3 +1,4 @@
 .idea/
 data/
+!*.gitkeep
 __pycache__/
