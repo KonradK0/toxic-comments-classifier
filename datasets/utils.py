@@ -1,14 +1,21 @@
 import logging
 import os.path
+from typing import Any
 
 import pandas as pd
 
 logger = logging.getLogger(__name__)
+
 DATA_DIR = os.environ['DATA_DIR'] if 'DATA_DIR' in os.environ else os.path.join('..', 'data')
+RAW_DIR = os.environ['RAW_DIR'] if 'RAW_DIR' in os.environ else os.path.join('..', 'data', 'raw')
+PREPROCESSED_DIR = os.environ['PREPROCESSED_DIR'] if 'PREPROCESSED_DIR' in os.environ else os.path.join('..', 'data',
+                                                                                                        'preprocessed')
+DATASET_FILENAME = 'toxic_comments.csv'
 
 
-def fetch(dataset_name, out_fname, *, preprocess_fn, **preprocess_kwargs):
-    dataset_path = os.path.join(DATA_DIR, dataset_name, out_fname)
+def fetch(dataset_name: str, out_fname: str, *, preprocess_fn: [[..., Any], pd.DataFrame],
+          **preprocess_kwargs) -> pd.DataFrame:
+    dataset_path = os.path.join(PREPROCESSED_DIR, out_fname)
 
     if not os.path.exists(dataset_path):
         logger.info(f'{out_fname} not present. Processing the dataset...')
@@ -23,4 +30,21 @@ def fetch(dataset_name, out_fname, *, preprocess_fn, **preprocess_kwargs):
     positive, negative = dataset['toxicity'].value_counts().T.to_numpy()
     logger.info(f'{dataset_name} dataset: {positive} non-toxic, {negative} toxic')
 
+    return dataset
+
+
+def merge_datasets(file_extension: str) -> pd.DataFrame:
+    paths = [os.path.join(PREPROCESSED_DIR, file) for file in os.listdir(path=PREPROCESSED_DIR) if
+             file.endswith(file_extension)]
+    dataset = pd.concat(pd.read_csv(path) for path in paths)
+    return dataset
+
+
+def read_dataset(file_extension: str = 'csv', out_fname: str = DATASET_FILENAME) -> pd.DataFrame:
+    out_path = os.path.join(DATA_DIR, out_fname)
+    if not os.path.exists(out_path):
+        dataset = merge_datasets(file_extension)
+        dataset.to_csv(out_path, index=False)
+    else:
+        dataset = pd.read_csv(out_path)
     return dataset
