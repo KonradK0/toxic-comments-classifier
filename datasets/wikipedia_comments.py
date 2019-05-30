@@ -60,7 +60,3 @@ def fetch(fname: str = 'wikipedia_comments.csv', comments_fname: str = 'toxicity
     logger.info(f'Wikipedia comments dataset: {positive} non-toxic, {negative} toxic')
 
     return dataset
-
-
-if __name__ == '__main__':
-    wikipedia = fetch()
