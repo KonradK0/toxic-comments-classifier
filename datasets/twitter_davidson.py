@@ -22,7 +22,7 @@ def _binarize_classes(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _get_preprocessed_dataset(*, raw_fname: str) -> pd.DataFrame:
-    raw_path = os.path.join(datasets.utils.DATA_DIR, DATASET_NAME, raw_fname)
+    raw_path = os.path.join(datasets.utils.RAW_DIR, raw_fname)
 
     dataset = pd.read_csv(raw_path, usecols=['tweet', 'class'])
     dataset.rename(columns={'tweet': 'text'}, inplace=True)

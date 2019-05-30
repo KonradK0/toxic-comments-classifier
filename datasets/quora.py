@@ -15,7 +15,7 @@ def _remove_tokens(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _get_preprocessed_dataset(*, raw_fname: str) -> pd.DataFrame:
-    raw_path = os.path.join(datasets.utils.DATA_DIR, DATASET_NAME, raw_fname)
+    raw_path = os.path.join(datasets.utils.RAW_DIR, raw_fname)
 
     dataset = pd.read_csv(raw_path, usecols=['question_text', 'target'])
     dataset.rename(columns={'question_text': 'text', 'target': 'toxicity'}, inplace=True)

@@ -23,7 +23,7 @@ def _merge_toxicity_labels(df: pd.DataFrame, toxicity_criteria: List[str]) -> pd
 
 
 def _get_preprocessed_dataset(raw_fname: str) -> pd.DataFrame:
-    raw_path = os.path.join(datasets.utils.DATA_DIR, DATASET_NAME, raw_fname)
+    raw_path = os.path.join(datasets.utils.RAW_DIR, raw_fname)
     toxicity_criteria = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
     dtypes = {criterion: bool for criterion in toxicity_criteria}
 

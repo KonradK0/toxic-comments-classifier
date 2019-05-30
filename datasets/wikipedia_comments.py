@@ -10,8 +10,8 @@ DATASET_NAME = 'wikipedia_comments'
 def _join_text_and_scores(comments_fname: str, annotations_fname: str) -> pd.DataFrame:
     dtypes = {'rev_id': int, 'toxicity': int, 'comment': str}
 
-    comments_path = os.path.join(datasets.utils.DATA_DIR, DATASET_NAME, comments_fname)
-    annotations_path = os.path.join(datasets.utils.DATA_DIR, DATASET_NAME, annotations_fname)
+    comments_path = os.path.join(datasets.utils.RAW_DIR, comments_fname)
+    annotations_path = os.path.join(datasets.utils.RAW_DIR, annotations_fname)
 
     comments = pd.read_csv(comments_path, sep='\t', usecols=['rev_id', 'comment'], dtype=dtypes)
     annotations = pd.read_csv(annotations_path, sep='\t', usecols=['rev_id', 'toxicity'], dtype=dtypes)
