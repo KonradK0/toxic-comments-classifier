@@ -57,6 +57,6 @@ def fetch(fname: str = 'wikipedia_comments.csv', comments_fname: str = 'toxicity
         dataset = pd.read_csv(dataset_path, dtype={'text': str, 'toxicity': int})
 
     positive, negative = dataset['toxicity'].value_counts().T.to_numpy()
-    logger.info(f'Wikipedia comments dataset: {positive} non-toxic, {negative} toxic')
+    logger.info(f'{DATASET_NAME} dataset: {positive} non-toxic, {negative} toxic')
 
     return dataset

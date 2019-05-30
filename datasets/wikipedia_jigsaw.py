@@ -53,7 +53,7 @@ def fetch(fname: str = 'wikipedia_jigsaw.csv', raw_fname: str = 'jigsaw_raw.csv'
         dataset = pd.read_csv(dataset_path, dtype={'text': str, 'toxicity': int})
 
     positive, negative = dataset['toxicity'].value_counts().T.to_numpy()
-    logger.info(f'Wikipedia jigsaw dataset: {positive} non-toxic, {negative} toxic')
+    logger.info(f'{DATASET_NAME} dataset: {positive} non-toxic, {negative} toxic')
 
     return dataset
 
