@@ -1,8 +1,9 @@
 import logging
 import os.path
-from typing import Any
+from typing import Any, Tuple
 
 import pandas as pd
+import tensorflow as tf
 
 logger = logging.getLogger(__name__)
 
@@ -33,18 +34,49 @@ def fetch(dataset_name: str, out_fname: str, *, preprocess_fn: [[..., Any], pd.D
     return dataset
 
 
-def merge_datasets(file_extension: str) -> pd.DataFrame:
+def _merge_datasets(file_extension: str) -> pd.DataFrame:
     paths = [os.path.join(PREPROCESSED_DIR, file) for file in os.listdir(path=PREPROCESSED_DIR) if
              file.endswith(file_extension)]
     dataset = pd.concat(pd.read_csv(path) for path in paths)
     return dataset
 
 
-def read_dataset(file_extension: str = 'csv', out_fname: str = DATASET_FILENAME) -> pd.DataFrame:
+def get_toxic_comments_df(file_extension: str = 'csv', out_fname: str = DATASET_FILENAME) -> pd.DataFrame:
     out_path = os.path.join(DATA_DIR, out_fname)
     if not os.path.exists(out_path):
-        dataset = merge_datasets(file_extension)
+        dataset = _merge_datasets(file_extension)
         dataset.to_csv(out_path, index=False)
     else:
         dataset = pd.read_csv(out_path)
-    return dataset
+    return dataset.dropna()
+
+
+def create_tf_dataset(df: pd.DataFrame) -> tf.data.Dataset:
+    return tf.data.Dataset.from_tensor_slices((tf.cast(df['text'], tf.string),
+                                               tf.cast(df['toxicity'], tf.int32)))
+
+
+def train_test_split(dataset: tf.data.Dataset, size: int, test_ratio: float = 0.2) -> \
+        Tuple[tf.data.Dataset, tf.data.Dataset]:
+    dataset = dataset.shuffle(size)
+    train_size = int((1 - test_ratio) * size)
+    train_dataset = dataset.take(train_size)
+    test_dataset = dataset.skip(train_size)
+    return train_dataset, test_dataset
+
+
+if __name__ == '__main__':
+    tf.enable_eager_execution()
+    dataset = get_toxic_comments_df()
+    print(dataset)
+    size = len(dataset)
+
+    train, test = train_test_split(create_tf_dataset(dataset), size=size)
+    for x, y in train:
+        print('Train')
+        print(x, y)
+        break
+    for x, y in test:
+        print('Test')
+        print(x, y)
+        break
