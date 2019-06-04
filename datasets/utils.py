@@ -63,20 +63,3 @@ def train_test_split(dataset: tf.data.Dataset, size: int, test_ratio: float = 0.
     train_dataset = dataset.take(train_size)
     test_dataset = dataset.skip(train_size)
     return train_dataset, test_dataset
-
-
-if __name__ == '__main__':
-    tf.enable_eager_execution()
-    dataset = get_toxic_comments_df()
-    print(dataset)
-    size = len(dataset)
-
-    train, test = train_test_split(create_tf_dataset(dataset), size=size)
-    for x, y in train:
-        print('Train')
-        print(x, y)
-        break
-    for x, y in test:
-        print('Test')
-        print(x, y)
-        break
