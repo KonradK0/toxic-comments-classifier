@@ -1,11 +1,8 @@
 import logging
 import os.path
-from typing import Any, Tuple
+from typing import Any
 
 import pandas as pd
-import tensorflow as tf
-import tensorflow_hub as hub
-from bert.tokenization import FullTokenizer
 
 logger = logging.getLogger(__name__)
 
@@ -51,13 +48,3 @@ def get_toxic_comments_df(file_extension: str = 'csv', out_fname: str = DATASET_
     else:
         dataset = pd.read_csv(out_path)
     return dataset.dropna()
-
-
-def train_test_split(dataset: pd.DataFrame, test_ratio: float = 0.2) -> \
-        Tuple[pd.DataFrame, pd.DataFrame]:
-    dataset = dataset.sample(frac=1)
-    size = len(dataset)
-    train_size = int((1 - test_ratio) * size)
-    train_dataset = dataset[:train_size]
-    test_dataset = dataset[train_size:]
-    return train_dataset, test_dataset
