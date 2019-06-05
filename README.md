@@ -17,3 +17,16 @@ The dataset used to train the classifier has been obtained from following source
 * [More Wikipedia comments](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge)
 
 Datasets were preprocessed and standardized.
+
+# Client
+
+Client requires python modules **requests** and **yaml**
+
+Run following to install them
+```
+    pip install requests pyyaml
+```
+Client accepts a text file as a command line argument file 
+and prints toxicity prediction for each line of the file
+
+Use command line option **--pretty-print** to enable more readable output
