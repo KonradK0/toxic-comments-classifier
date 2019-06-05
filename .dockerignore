@@ -1,0 +1,9 @@
+client
+data
+Dockerfile
+.dockerignore
+.git
+README.md
+__pycache__
+.idea
+.gitignore

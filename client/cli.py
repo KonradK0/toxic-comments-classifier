@@ -3,7 +3,7 @@ import argparse
 import requests
 import yaml
 
-CONFIG_FNAME = 'test_config.yml'
+CONFIG_FNAME = 'heroku_config.yml'
 
 
 def _parse_config():
