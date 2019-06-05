@@ -10,6 +10,7 @@ from server.model import Classifier
 
 PRETRAINED_PATH = os.environ['PRETRAINED_PATH'] if 'PRETRAINED_PATH' in os.environ else os.path.join('..', 'pretrained',
                                                                                                      'model.h5')
+PORT = os.environ['PORT'] if 'PORT' in os.environ else 8080
 VOCAB_FILE = 'vocab.txt'
 app = flask.Flask(__name__)
 
@@ -43,4 +44,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(port=8081)
+    app.run(port=PORT)
