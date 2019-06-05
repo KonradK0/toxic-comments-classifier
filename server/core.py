@@ -1,11 +1,16 @@
 import os.path
 
+import bert
+import bert.run_classifier
+import bert.tokenization
 import flask
 
+import datasets
 from server.model import Classifier
 
 PRETRAINED_PATH = os.environ['PRETRAINED_PATH'] if 'PRETRAINED_PATH' in os.environ else os.path.join('..', 'pretrained',
                                                                                                      'model.h5')
+VOCAB_FILE = 'vocab.txt'
 app = flask.Flask(__name__)
 
 
@@ -18,10 +23,18 @@ def get_model():
     return model
 
 
+def _parse_request():
+    queries = flask.request.get_json(silent=True)['queries']
+    tokenizer = bert.tokenization.FullTokenizer(VOCAB_FILE)
+
+    input_examples = [bert.run_classifier.InputExample(guid=None, text_a=query) for query in queries]
+
+    return datasets.utils.convert_examples_to_features(tokenizer, input_examples)
+
+
 @app.route('/predict', methods=['POST'])
 def predict():
-    request = flask.request.get_json(silent=True)
-    input_ids, input_masks, segment_ids = request['input_ids'], request['input_masks'], request['segment_ids']
+    input_ids, input_masks, segment_ids, _ = _parse_request()
     model = get_model()
     preds = model.predict(input_ids, input_masks, segment_ids)
     response = {'predictions': preds}

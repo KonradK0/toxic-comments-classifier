@@ -1,14 +1,9 @@
 import argparse
 
-import bert.run_classifier
-import bert.tokenization
 import requests
 import yaml
 
-import datasets
-
 CONFIG_FNAME = 'test_config.yml'
-VOCAB_FNAME = 'vocab.txt'
 
 
 def _parse_config():
@@ -24,31 +19,13 @@ def _parse_args():
     return parser.parse_args()
 
 
-def _make_input_examples(queries):
-    return [bert.run_classifier.InputExample(guid=None, text_a=query) for query in queries]
-
-
-def _prepare_payload(tokenizer, input_examples):
-    input_ids, input_masks, segment_ids, _ = datasets.utils.convert_examples_to_features(tokenizer, input_examples)
-
-    payload = {
-        "input_ids": input_ids.tolist(),
-        "input_masks": input_masks.tolist(),
-        "segment_ids": segment_ids.tolist()
-    }
-
-    return payload
-
-
 def _parse_queries(args):
     with open(args.file) as queries_file:
         return queries_file.read().splitlines(keepends=False)
 
 
 def _fetch_predictions(queries, endpoint):
-    input_examples = _make_input_examples(queries)
-    tokenizer = bert.tokenization.FullTokenizer(VOCAB_FNAME)
-    payload = _prepare_payload(tokenizer, input_examples)
+    payload = {'queries': queries}
     r = requests.post(endpoint, json=payload)
     return r.json()['predictions']
 
