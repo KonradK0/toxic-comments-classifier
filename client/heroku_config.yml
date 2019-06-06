@@ -1,3 +1,0 @@
-host: tcclassifier.herokuapp.com
-port: 80
-endpoint: "predict"
